@@ -73,7 +73,7 @@ MyPlot <- function(xy, xlim = c(-4, 4), ylim = c(-4, 4), eps = 1e-15,
       mutate( ppscore = round(ppscore, 1) ) %>% 
       pull(ppscore)
     
-    title <- bquote("pps"["X¨Y"] * " = " * .(value))
+    title <- bquote("pps"["X??Y"] * " = " * .(value))
     
     subtitle <- NULL
     
@@ -86,7 +86,7 @@ MyPlot <- function(xy, xlim = c(-4, 4), ylim = c(-4, 4), eps = 1e-15,
       mutate( ppscore = round(ppscore, 1) ) %>% 
       pull(ppscore)
     
-    title <- bquote("pps"["Y¨X"] * " = " * .(value))
+    title <- bquote("pps"["Y??X"] * " = " * .(value))
     
     subtitle <- NULL
     
@@ -210,7 +210,7 @@ output <- function( metric = c("cor", "nlcor", "ppsxy", "ppsyx") ) {
 
 #plots1 <- MvNormal( n = 800, cor = c(1.0, 0.8, 0.4, 0.0, -0.4, -0.8, -1.0), metric = "cor" )
 
-use_condaenv("ppscore")
+use_condaenv("test_ppscore")
 
 pps <- import(module = "ppscore")
 

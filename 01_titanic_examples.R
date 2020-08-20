@@ -95,7 +95,7 @@ df <- df %>%
   )
 
 
-use_condaenv("ppscore")
+use_condaenv("test_ppscore")
 
 pps <- import(module = "ppscore")
 
