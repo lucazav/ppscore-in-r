@@ -99,18 +99,20 @@ use_condaenv("test_ppscore")
 
 pps <- import(module = "ppscore")
 
-set.seed(1234)
 
 # PPScore heatmap
-score <- pps$matrix(df = df)
+score <- pps$matrix(df = df, random_seed = 1234L)
 
 score %>% heatmap(x = x, y = y, value = ppscore,
                   main_title = "PPScore for Titanic's predictors", legend_title = "PPScore")
 
 # Variable importance
-vi <- pps$predictors( df = df, y = "Survived")
+vi <- pps$predictors( df = df, y = "Survived", random_seed = 1234L)
 
 vi %>%
+# score %>%
+#   filter( y == "Survived" &
+#           x != "Survived" ) %>% 
   mutate( x = as.factor(x) ) %>%
   lollipop( ppscore, x,
             main_title = "Variable Importance for target = 'Survived'",

@@ -1,20 +1,26 @@
 
-# https://commons.wikimedia.org/w/index.php?curid=15165296
-# https://github.com/ProcessMiner/nlcor
+# The following code assumes that the '00_prepare_conda_env_from_r.R' file code has been executed
 
-# devtools::install_github("ProcessMiner/nlcor")
 
+# Install packages
+pkgs <- c("dplyr","ggplot2","ggpubr","mvtnorm")
+
+for (pkg in pkgs) {
+  if (! (pkg %in% rownames(installed.packages()))) { install.packages(pkg) }
+}
+
+
+# Load packages
 library(mvtnorm)
-library(nlcor)
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
 library(reticulate)
 
 
-
+# Functions
 MyPlot <- function(xy, xlim = c(-4, 4), ylim = c(-4, 4), eps = 1e-15,
-                    metric = c("cor", "nlcor", "ppsxy", "ppsyx")) {
+                    metric = c("cor", "ppsxy", "ppsyx")) {
   
   metric <- metric[1]
   
@@ -38,65 +44,33 @@ MyPlot <- function(xy, xlim = c(-4, 4), ylim = c(-4, 4), eps = 1e-15,
     
     subtitle <- NULL
     
-  } else if (metric == "nlcor") {
+  } else if (metric == "ppsxy") {
     
-    nlc <- nlcor(xy[,1], xy[,2], plt = FALSE)
-    value <- round(nlc$cor.estimate, 1)
-    pvalue <- round(nlc$adjusted.p.value, 3)
-    
-    if (!is.na(pvalue) & pvalue < 0.05) {
-      txt <- "correlation IS statistically significant"
-      
-      pvalue_chr <- as.character(pvalue)
-    } else if (!is.na(pvalue)) {
-      txt <- "correlation IS NOT statistically significant"
-      
-      pvalue_chr <- as.character(pvalue)
-    } else {
-      txt <- "correlation IS NOT statistically significant"
-      
-      pvalue_chr <- "NA"
-    }
-    
-    #title <- bquote("nlcorr = " * .(value))
-    title <- paste0("nlcorr = ", value)
-    
-    #subtitle <- paste0("p-value = ", pvalue_chr, "  (", txt, ")")
-    subtitle <- paste0("p-value = ", pvalue_chr)
-  }
-  else if (metric == "ppsxy") {
-    
-    pps_df <- pps$matrix(df = df)
+    pps_df <- pps$matrix(df = df, random_seed = 1111L)
     
     value <- pps_df %>% 
       filter( x == "x" & y == "y" ) %>% 
       mutate( ppscore = round(ppscore, 1) ) %>% 
       pull(ppscore)
     
-    title <- bquote("pps"["X??Y"] * " = " * .(value))
+    title <- bquote("pps"[X%->%Y] * " = " * .(value))
     
     subtitle <- NULL
     
   } else if (metric == "ppsyx") {
     
-    pps_df <- pps$matrix(df = df)
+    pps_df <- pps$matrix(df = df, random_seed = 1111L)
     
     value <- pps_df %>% 
       filter( x == "y" & y == "x" ) %>% 
       mutate( ppscore = round(ppscore, 1) ) %>% 
       pull(ppscore)
     
-    title <- bquote("pps"["Y??X"] * " = " * .(value))
+    title <- bquote("pps"[Y%->%X] * " = " * .(value))
     
     subtitle <- NULL
     
   }
-  
-  
-  # plot(xy, main = title, sub = subtitle, xlab = "", ylab = "",
-  #      col = "darkblue", pch = 16, cex = 0.2,
-  #      xaxt = "n", yaxt = "n", bty = "n",
-  #      xlim = xlim, ylim = ylim)
   
   ggplot(df, aes(x, y)) +
     geom_point( color = "darkblue", size = 0.2 ) +
@@ -104,11 +78,12 @@ MyPlot <- function(xy, xlim = c(-4, 4), ylim = c(-4, 4), eps = 1e-15,
     ylim(ylim) +
     labs(title = title,
          subtitle = subtitle) +
-    theme_void()
+    theme_void() +
+    theme( plot.title = element_text(size = 10, hjust = .5) )
   
 }
 
-MvNormal <- function(n = 1000, cor = 0.8, metric = c("cor", "nlcor", "ppsxy", "ppsyx")) {
+MvNormal <- function(n = 1000, cor = 0.8, metric = c("cor", "ppsxy", "ppsyx")) {
   
   metric <- metric[1]
   
@@ -128,7 +103,7 @@ MvNormal <- function(n = 1000, cor = 0.8, metric = c("cor", "nlcor", "ppsxy", "p
 
 rotation <- function(t, X) return(X %*% matrix(c(cos(t), sin(t), -sin(t), cos(t)), ncol = 2))
 
-RotNormal <- function(n = 1000, t = pi/2, metric = c("cor", "nlcor", "ppsxy", "ppsyx")) {
+RotNormal <- function(n = 1000, t = pi/2, metric = c("cor", "ppsxy", "ppsyx")) {
   
   metric <- metric[1]
   
@@ -148,7 +123,7 @@ RotNormal <- function(n = 1000, t = pi/2, metric = c("cor", "nlcor", "ppsxy", "p
 
 }
 
-Others <- function(n = 1000, metric = c("cor", "nlcor", "ppsxy", "ppsyx")) {
+Others <- function(n = 1000, metric = c("cor", "ppsxy", "ppsyx")) {
   
   metric <- metric[1]
   
@@ -185,14 +160,9 @@ Others <- function(n = 1000, metric = c("cor", "nlcor", "ppsxy", "ppsyx")) {
   return(res)
 }
 
-output <- function( metric = c("cor", "nlcor", "ppsxy", "ppsyx") ) {
+output <- function( metric = c("cor", "ppsxy", "ppsyx") ) {
   
   metric <- metric[1]
-  
-  # par(mfrow = c(3, 7), oma = c(0,0,0,0), mar=c(2,2,2,0))
-  # MvNormal( n = 800, cor = c(1.0, 0.8, 0.4, 0.0, -0.4, -0.8, -1.0), metric = metric );
-  # RotNormal(200, c(0, pi/12, pi/6, pi/4, pi/2-pi/6, pi/2-pi/12, pi/2), metric = metric);
-  # Others(800, metric = metric)
   
   plots1 <- MvNormal( n = 800, cor = c(1.0, 0.8, 0.4, 0.0, -0.4, -0.8, -1.0), metric = metric );
   plots2 <- RotNormal(200, c(0, pi/12, pi/6, pi/4, pi/2-pi/6, pi/2-pi/12, pi/2), metric = metric);
@@ -208,14 +178,14 @@ output <- function( metric = c("cor", "nlcor", "ppsxy", "ppsyx") ) {
   
 }
 
-#plots1 <- MvNormal( n = 800, cor = c(1.0, 0.8, 0.4, 0.0, -0.4, -0.8, -1.0), metric = "cor" )
 
+#-- Main -------------------------------------
 use_condaenv("test_ppscore")
 
 pps <- import(module = "ppscore")
 
-output( metric = "cor")
-output( metric = "nlcor")
+output( metric = "cor" )
 output( metric = "ppsxy" )
 output( metric = "ppsyx" )
+
 
