@@ -3,7 +3,7 @@ In recent months Florian Wetschoreck published a story on Toward Data Science's 
 
 [Using The Predictive Power Score in R](https://medium.com/@lucazav)
 
-I have also collected all the R code needed to reproduce the examples shown in the post in this repository.
+I also have collected all the R code needed to reproduce the examples shown in the blog post into this repository.
 Here are some graphs obtained thanks to the aforementioned R code.
 The PPScore version used to get the shown results is 1.1.0.
 
