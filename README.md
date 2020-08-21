@@ -1,7 +1,7 @@
-# Using The Predicting Power Score in R
+# Using The Predictive Power Score in R
 In recent months Florian Wetschoreck published a story on Toward Data Science's Medium channel that attracted the attention of many data scientists on LinkedIn thanks to its very provocative title: "RIP correlation. Introducing the Predictive Power Score". I wrote a blog a post to summarize the pros and cons of this new index:
 
-[Using The Predicting Power Score in R](https://medium.com/@lucazav)
+[Using The Predictive Power Score in R](https://medium.com/@lucazav)
 
 I have also collected all the R code needed to reproduce the examples shown in the post in this repository.
 Here are some graphs obtained thanks to the aforementioned R code.
