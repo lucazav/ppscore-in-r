@@ -5,6 +5,7 @@ In recent months Florian Wetschoreck published a story on Toward Data Science's 
 
 I have also collected all the R code needed to reproduce the examples shown in the post in this repository.
 Here are some graphs obtained thanks to the aforementioned R code.
+The PPScore version used to get the shown results is 1.1.0.
 
 ## PPScore Heatmap for Titanic's Predictors
 ![PPScore Heatmap for Titanic's Predictors](titanic_heatmap.png)
