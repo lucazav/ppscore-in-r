@@ -5,7 +5,7 @@ The Predictive Power Score (PPS) is a normalized index (it ranges from 0 to 1) t
 
 I wrote a blog a post to summarize the pros and cons of this new index:
 
-[Using The Predictive Power Score in R](https://medium.com/@lucazav)
+[Using The Predictive Power Score in R](https://towardsdatascience.com/using-the-predictive-power-score-in-r-26c43d05dc01)
 
 I also collected all the R code needed to reproduce the examples shown in the blog post into this repository.
 
